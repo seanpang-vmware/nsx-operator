@@ -7,9 +7,15 @@ import (
 
 // assume that staticroute doesn't have the same ipaddress, return true if equal
 func (service *StaticRouteService) compareStaticRoute(oldStaticRoute *model.StaticRoutes, newStaticRoute *model.StaticRoutes) bool {
-	if *oldStaticRoute.Network != *newStaticRoute.Network {
+	// Compare Network
+	if (oldStaticRoute.Network == nil && newStaticRoute.Network != nil) ||
+		(oldStaticRoute.Network != nil && newStaticRoute.Network == nil) {
 		return false
 	}
+	if oldStaticRoute.Network != nil && newStaticRoute.Network != nil && *oldStaticRoute.Network != *newStaticRoute.Network {
+		return false
+	}
+
 	oldNextHops := oldStaticRoute.NextHops
 	newNextHops := newStaticRoute.NextHops
 	if len(oldNextHops) != len(newNextHops) {

@@ -42,7 +42,29 @@ func TestCompareStaticRoute(t *testing.T) {
 			{IpAddress: util.Ptr("192.168.1.2")},
 		},
 	}
+
+	oldStaticRouteNilNetwork := &model.StaticRoutes{
+		Network: nil,
+		NextHops: []model.RouterNexthop{
+			{IpAddress: util.Ptr("192.168.1.1")},
+			{IpAddress: util.Ptr("192.168.1.2")},
+		},
+	}
+
+	newStaticRouteNilNetwork := &model.StaticRoutes{
+		Network: nil,
+		NextHops: []model.RouterNexthop{
+			{IpAddress: util.Ptr("192.168.1.1")},
+			{IpAddress: util.Ptr("192.168.1.2")},
+		},
+	}
+
 	assert.True(t, service.compareStaticRoute(oldStaticRoute, newStaticRouteSame))
 	assert.False(t, service.compareStaticRoute(oldStaticRoute, newStaticRouteDifferent))
 	assert.False(t, service.compareStaticRoute(oldStaticRoute, newStaticRouteDifferentNetwork))
+	
+	// Test nil network handling
+	assert.True(t, service.compareStaticRoute(oldStaticRouteNilNetwork, newStaticRouteNilNetwork))
+	assert.False(t, service.compareStaticRoute(oldStaticRoute, newStaticRouteNilNetwork))
+	assert.False(t, service.compareStaticRoute(oldStaticRouteNilNetwork, newStaticRouteSame))
 }
